@@ -1,6 +1,6 @@
 #webdriver_manager.py
 
-import os, sys, winreg, win32api, requests, shutil
+import os, sys, time, winreg, win32api, requests, shutil
 
 class WebDriverManager:
     def __init__(self):
@@ -140,6 +140,10 @@ class WebDriverManager:
             self.download_edgedriver()
         else:
             print(f"版本号一致")
-            print("=" * 50)
-            print("https://rm.vankeservice.com/api/easycheck/web/index?wkwebview=true&rurl=/nightAnswer")
-            print("请输入轻松夜答URL或输入2进入：")
+            for i in range(50):
+                print("=" * 1, end='')
+                sys.stdout.flush()
+                time.sleep(0.01)
+            time.sleep(0.3)
+            os.system('cls')
+
