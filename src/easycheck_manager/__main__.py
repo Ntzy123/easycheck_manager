@@ -4,7 +4,7 @@ import os
 import sys
 import platform
 import subprocess
-from easycheck_manager.lib.webdriver_manager import WebDriverManager
+from easycheck_manager import WebDriverManager
 
 if __name__ == '__main__':
 

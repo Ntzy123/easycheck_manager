@@ -21,7 +21,7 @@ pip install easycheck-manager[build]
 ## 快速开始
 
 ```python
-from easycheck_manager.lib.webdriver_manager import WebDriverManager
+from easycheck_manager import WebDriverManager
 
 manager = WebDriverManager()
 manager.start()

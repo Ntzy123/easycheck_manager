@@ -6,8 +6,8 @@
 # --- OS detection ---
 ifeq ($(OS),Windows_NT)
     PYTHON      = python
-    VENV_PYTHON = .venv\Scripts\python
-    VENV_PIP    = .venv\Scripts\pip
+    VENV_PYTHON = .venv\Scripts\python.exe
+    VENV_PIP    = .venv\Scripts\pip.exe
     SEP         = ;
     NULL        = nul
 else
