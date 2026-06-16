@@ -1,4 +1,4 @@
-# run.py
+# __main__.py
 
 import os, sys, subprocess
 from lib.webdriver_manager import WebDriverManager
