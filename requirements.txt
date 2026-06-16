@@ -1,4 +1,4 @@
 pyinstaller
 requests
-pywin32
 selenium
+pywin32; platform_system == "Windows"
