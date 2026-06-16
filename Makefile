@@ -1,5 +1,5 @@
 # ============================================================================
-# Makefile - ticket_timeout
+# Makefile - easycheck_manager
 # Cross-platform (Windows / Linux / macOS)
 # ============================================================================
 
@@ -18,7 +18,7 @@ else
     NULL        = /dev/null
 endif
 
-APP_NAME = ticket_timeout
+APP_NAME = easycheck_manager
 
 .PHONY: help setup mirror run build test
 
