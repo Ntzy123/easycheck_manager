@@ -393,9 +393,10 @@ class TestDownloadEdgedriverWin:
 # ====================================================================
 
 class TestDownloadEdgedriverLinux:
-    def _make_zip_entry(self, name):
+    def _make_zip_entry(self, name, is_dir=False):
         entry = MagicMock(spec_set=zipfile.ZipInfo)
         entry.filename = name
+        entry.is_dir.return_value = is_dir
         return entry
 
     def _setup_linux_mocks(self, linux_wd, zip_entries, chmod_side_effect=None):
@@ -409,6 +410,7 @@ class TestDownloadEdgedriverLinux:
             'os.makedirs': patch('os.makedirs'),
             '_download_file': patch.object(linux_wd, '_download_file'),
             'zipfile.ZipFile': patch('zipfile.ZipFile', return_value=mock_zip),
+            'shutil.copy2': patch('shutil.copy2'),
             'os.chmod': patch('os.chmod'),
             '_cleanup_zip': patch.object(linux_wd, '_cleanup_zip'),
         }
@@ -427,6 +429,27 @@ class TestDownloadEdgedriverLinux:
             linux_wd._download_edgedriver_linux("https://example.com/driver.zip")
             # 验证 msedgedriver 从 zip 中被提取
             assert entry.filename == 'msedgedriver'
+        finally:
+            self._teardown_mocks(patches)
+
+    def test_works_without_directory_prefix(self, linux_wd):
+        """zip 内直接是 msedgedriver 文件（无目录前缀）"""
+        entry = self._make_zip_entry('msedgedriver')
+        patches = self._setup_linux_mocks(linux_wd, [entry])
+        try:
+            linux_wd._download_edgedriver_linux("https://example.com/driver.zip")
+            assert entry.filename == 'msedgedriver'
+        finally:
+            self._teardown_mocks(patches)
+
+    def test_skips_directory_entries(self, linux_wd):
+        """跳过 zip 中的目录项，只匹配文件"""
+        dir_entry = self._make_zip_entry('edgedriver_linux64/', is_dir=True)
+        file_entry = self._make_zip_entry('edgedriver_linux64/msedgedriver')
+        patches = self._setup_linux_mocks(linux_wd, [dir_entry, file_entry])
+        try:
+            linux_wd._download_edgedriver_linux("https://example.com/driver.zip")
+            assert file_entry.filename == 'msedgedriver'
         finally:
             self._teardown_mocks(patches)
 
@@ -460,8 +483,8 @@ class TestDownloadEdgedriverLinux:
         with patch('os.makedirs'):
             with patch.object(linux_wd, '_download_file'):
                 with patch('zipfile.ZipFile', return_value=mock_zip):
-                    with patch('os.chmod', side_effect=PermissionError):
-                        with patch.object(linux_wd, '_cleanup_zip'):
+                    with patch('shutil.copy2'):
+                        with patch('os.chmod', side_effect=PermissionError):
                             with pytest.raises(SystemExit):
                                 linux_wd._download_edgedriver_linux("https://example.com/driver.zip")
 

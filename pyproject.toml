@@ -24,7 +24,7 @@ test = [
 ]
 
 [project.scripts]
-easycheck-manager = "easycheck_manager:main"
+easycheck-manager = "easycheck_manager.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

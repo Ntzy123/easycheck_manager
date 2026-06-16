@@ -202,7 +202,10 @@ class WebDriverManager:
         try:
             with zipfile.ZipFile(zip_path, 'r') as zf:
                 for info in zf.infolist():
-                    if info.filename.endswith('/' + driver_exe):
+                    # 跳过目录项，只匹配文件名（兼容有/无目录前缀的情况）
+                    if info.is_dir():
+                        continue
+                    if os.path.basename(info.filename) == driver_exe:
                         # 去掉目录前缀，只保留文件名
                         info.filename = driver_exe
                         zf.extract(info, self.CACHE_DIR)
@@ -211,6 +214,9 @@ class WebDriverManager:
                     print(f"压缩包中未找到 {driver_exe}")
                     sys.exit(1)
 
+            # 复制到最终位置 /usr/local/bin/
+            src = os.path.join(self.CACHE_DIR, driver_exe)
+            shutil.copy2(src, self.EDGEDRIVER_PATH)
             os.chmod(self.EDGEDRIVER_PATH, 0o755)
             print(f"msedgedriver 已安装至 {self.EDGEDRIVER_PATH}")
         except PermissionError:
